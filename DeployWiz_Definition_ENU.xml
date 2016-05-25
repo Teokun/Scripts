@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+' // ***************************************************************************
+' // 
+' // Copyright (c) Microsoft Corporation.  All rights reserved.
+' // 
+' // Microsoft Deployment Toolkit Solution Accelerator
+' //
+' // File:      DeployWiz_Definition_ENU.wsf
+' // 
+' // Version:   6.3.8298.1000
+' // 
+' // Purpose:   Main Client Deployment Wizard Defintion File
+' // 
+' // ***************************************************************************
+
+-->
+<Wizard>
+  <Global>
+    <CustomStatement><![CDATA[ document.title =  "Windows Deployment Wizard" ]]></CustomStatement>
+    <Initialization>DeployWiz_Initialization.vbs</Initialization>
+    <Validation>DeployWiz_Validation.vbs</Validation>
+  </Global>
+  <!-- ************************************************************** -->
+  <!-- ************************************************************** -->
+  <Pane id="StartMenu" reference="DeployWiz_StartMenu.xml">
+  </Pane>
+  <Pane id="LOTC" reference="DeployWiz_LOTC.xml">
+  </Pane>
+  <Pane id="SelectRoleConfig" reference="DeployWiz_SelectRoleConfig.xml">
+  </Pane>
+  <Pane id="SelectTaskSequence" reference="DeployWiz_SelectTS.xml">
+  </Pane>
+  <Pane id="Configurations" reference="DeployWiz_Configurations.xml">
+  </Pane>
+  <Pane id="ComputerName" reference="DeployWiz_ComputerName.xml">
+  </Pane>
+  <Pane id="UserData" reference="DeployWiz_UserData.xml">
+  </Pane>
+  <Pane id="OfflineUserData" reference="DeployWiz_OfflineData.xml">
+  </Pane>
+  <Pane id="UserDataRestore" reference="DeployWiz_UserDataRestore.xml">
+  </Pane>
+  <Pane id="ComputerBackup" reference="DeployWiz_ComputerBackup.xml">
+  </Pane>
+  <Pane id="ProductKey" reference="DeployWiz_ProductKeyVista.xml">
+  </Pane>
+  <Pane id="SelectLanguagePack" reference="DeployWiz_LanguagePack.xml">
+  </Pane>
+  <Pane id="SelectLanguageUI" reference="DeployWiz_LanguageUI.xml">
+  </Pane>
+  <Pane id="SelectRoles" reference="DeployWiz_Roles.xml">
+  </Pane>
+  <Pane id="ApplicationSelection" reference="DeployWiz_Applications.xml">
+  </Pane>
+  <Pane id="AdministratorPassword" reference="DeployWiz_AdminPassword.xml">
+  </Pane>
+  <Pane id="AdministratorAccounts" reference="DeployWiz_AdminAccounts.xml">
+  </Pane>
+  <Pane id="CaptureImage" reference="DeployWiz_CaptureImage.xml">
+  </Pane>
+  <Pane id="BitLocker" reference="DeployWiz_BitLocker.xml">
+  </Pane>
+  <Pane id="Credentials" reference="DeployWiz_Credentials.xml">
+  </Pane>
+  <Pane id="Ready" reference="DeployWiz_Ready.xml">
+  </Pane>
+</Wizard>

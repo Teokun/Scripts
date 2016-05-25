@@ -1,0 +1,232 @@
+<Wizard>
+  <Global>
+    <CustomScript>DeployWiz_Partitions.vbs</CustomScript>
+    <CustomScript>DeployWiz_WinUpdates.VBS</CustomScript>
+    <CustomScript>DeployWiz_ComputerName.vbs</CustomScript>
+    <CustomScript>DeployWiz_DriverGroup.vbs</CustomScript>
+  </Global>
+  <Pane id="Configurations" title="Configurations">
+    <Body><![CDATA[
+
+<table style="width: 100%;">
+	<tr>
+		<td style="width:1px;">
+		</td>
+		<td style="width: 160px;"><span class=Larger>Compu<u class=Larger>t</u>er name:</span><label id=cNamePattern></label></td>
+		<td align="left">
+			<input type=text id="OSDComputerName" name=OSDComputerName size=15 language=vbscript onpropertychange=ValidateComputerName AccessKey=t />
+			<label class=ErrMsg for=OSDComputerName>* Required</label>
+			<label class=ErrMsg id=InvalidChar>Invalid characters!</label>
+			<label class=ErrMsg id=TooLong>Maximum of 15 characters!</label>
+		</td>
+		<td>
+			<input type=radio name="HD" id="HD0" checked language=vbscript onclick=ValidateDisk accesskey=h>
+			<label for=HD0><u class=larger>H</u>D0</label>
+			<input type=radio name="HD" id="HD1" language=vbscript onclick=ValidateDisk accesskey=d>
+			<label for=HD1>H<u class=larger>D</u>1</label>
+		</td>
+	</tr>
+</table>
+
+<div id=EspaceBackupWim>
+<table>
+	<tr>
+		<td><input type=checkbox name=BackupWimOpt id="OptBackupWim" /></td>
+		<td><label for=BackupWimOpt style="color:red"> Sauvegarde complète de TOUTES les partitions avant installation</label></td>
+	</tr><tr>
+		<td>
+			<input type=hidden disabled id="SrvWimChemin" name=SrvWimChemin size=100>
+			<input type=hidden disabled id="WimFileToCopy" name=WimFileToCopy size=100>
+			<input type=hidden disabled id="WimSrvPath" name=WimSrvPath size=100>
+			<input type=hidden disabled id="WimFilePath" name=WimFilePath size=100>
+			
+		</td>
+		<td><label id=BackupLocationLabel></td>
+	</tr>
+</table>
+</div>
+
+<div id=Espace1>
+	<br/>
+</div>
+               					 <Label class=Larger id=Disk0Title style="background:White"></label>
+<table>
+	<tr>
+		<td>
+			<input type=radio name="JDRadio" id="JDRadio1" checked language=vbscript onclick=ValidatePartitions accesskey=1>
+			<label for=JDRadio1><u class=larger>1</u> partition - taille maximum</label>
+		</td>
+		<td>
+			<label class=Larger>&nbsp;&nbsp;&nbsp;<u class=larger>C</u> :</label>
+			<input type="Number" id="SizeC" name="SizeC" onpropertychange=ValidateSizeDisk accesskey=c size=6></input>
+			<select name="TypeC" onpropertychange=ValidateSizeDisk>
+  			<option value="GB">GB</option>
+  			<option value="MB">MB</option>
+  			<option value="%">%</option>
+			</select>
+			<label>du disque</label>
+			<label class=ErrMsg id=InvalidCharC>Charactère Invalide!</label>
+			<label class=ErrMsg id=OnlyC>de 1 à 100</label>
+	</tr>
+	<tr>
+		<td>
+			<input type=radio name="JDRadio" id="JDRadio2" language=vbscript onclick=ValidatePartitions accesskey=2>
+			<label for=JDRadio2><u class=larger>2</u> partitions</label>
+		</td>
+		<td>
+		<label class=Larger>&nbsp;&nbsp;&nbsp;<u class=larger>D</u> :</label>
+		<input type="Number" id="SizeD" name="SizeD" onpropertychange=ValidateSizeDisk accesskey=d size=6></input>
+			<select name="TypeD" onpropertychange=ValidateSizeDisk>
+  			<option value="GB">GB</option>
+  			<option value="MB">MB</option>
+  			<option value="%">%</option>
+			</select>
+  		<label>du restant</label>
+  		<label class=ErrMsg id=InvalidCharD>Charactère Invalide!</label>
+			<label class=ErrMsg id=OnlyD>de 1 à 100</label> 
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<input type=checkbox id="KeepPartitions" AccessKey=K>
+			<Label for=KeepPartitions>Conser<u>v</u>er les partitions (no part/ no format)</Label>
+		</td>
+		<td>
+			<input type=checkbox id="OptionMig" AccessKey=O>
+			<Label for=OptionMig><u>O</u>ptions Migrations</Label>
+		</td>
+	</tr>
+</table>
+<label class=ErrMsg id=InvalidConfDisk>Configuration invalide !</label>
+<div id=Espace2>
+	<br/>
+</div>
+<div id=GhostModule>
+															<Label class=Larger id=GhostTitre style="background:White"></label>
+<table>
+	<tr>
+		<td><label id=ServLabel></label></td>
+		<td><input type=hidden disabled id="SrvChemin" name=SrvChemin size=50></td>
+	</tr>
+	<tr>
+		<td><Label id=SauvLabel>Chemin Sauvegarde</Label></td>
+		<td><input type=text disabled id="GhostChemin" name=GhostChemin size=50></td>
+	</tr>	
+	<tr>
+		<td/>
+		<td><input type=hidden disabled id="GhostSize" name=GhostSize size=15></td>
+		<input type=hidden disabled id="Applications900" name=Applications900 size=30>
+	</tr>	
+	
+</table>	
+
+<table>	
+	<tr>
+		<td style="width:1px;">
+			<img src="DeployWiz_Ghost.png" alt="Ghost" style="width:39px; height:39px; ">
+		</td>
+		<td><input type=radio name="GetGhost" id="GDRadio1" value=Yes language=vbscript AccessKey=G></td>
+		<td>
+			<Label class="Larger"><u class=larger>G</u>host à récupérer</Label>
+			<br>
+			<div>Destination c:</div>
+		</td>
+		<td>
+		<td style="width:1px;">
+			<img src="DeployWiz_NoGhost.png" alt="Pas Ghost" style="width:39px; height:39px; ">
+		</td>
+		<td><input type=radio name="GetGhost" id="GDRadio2" value=No language=vbscript AccessKey=P></td>
+		<td>
+			<Label class="Larger"><u class=larger>P</u>as de Ghost</Label>
+		</td>
+	</tr>
+</table>
+</div>
+
+																			<Label class=Larger style="background:White">Mises à jour Windows</label>
+<table>
+	<tr>
+		<td><input type=radio name="WinUpdate" id="WURadio1" value=No language=vbscript onclick=ValidateWindowsUpdate AccessKey=A></td>
+		<td><Label class="Larger"><u class=larger>A</u>ucune&nbsp;&nbsp;&nbsp; | </Label></td>
+	<!-- <tr><td></td>
+		<td><div>Le système d'exploitation sera déployé sans mises à jour</div></td>
+	</tr>
+	<tr><td colspan=2>&nbsp;</td></tr> -->
+
+		<td></td>
+		<td><input type=radio name="WinUpdate" id="WURadio2" checked value=Yes language=vbscript onclick=ValidateWindowsUpdate AccessKey=I></td>
+		<td><Label class="Larger"><u class=larger>W</u>indows Update&nbsp;&nbsp;&nbsp; | </Label></td>
+	<!-- <tr><td></td>
+		<td><div>Le système d'exploitation sera déployé avec toutes les mises à jour disponibles depuis Windows Update (Internet)</div></td>
+	</tr>
+	<tr><td colspan=2>&nbsp;</td></tr> -->
+		<td></td>
+		<td><input type=radio name="WinUpdate" id="WURadio3"  value=Yes language=vbscript onclick=ValidateWindowsUpdate AccessKey=W></td>
+		<td><Label class="Larger">W<u class=larger>S</u>US</Label></td>
+
+		<td></td>
+		<td></td>
+		<td>
+		<!-- <td><div>Le système d'exploitation sera déployer avec les mises à jour disponibles depuis WSUS</div>
+				<br> -->
+			<!-- <div><u>U</u>RL WSUS (http://xxx:8530):</div> -->
+			<input type=text id="WSUSServer" name=WSUSServer AccessKey=U>
+			<label class=ErrMsg id=InvalidWSUSServer>* Serveur non joignable</label>
+			<!-- <label class=ErrMsg for=WSUSServer>* Requis</label>&nbsp;
+			<div>WSUS <u>T</u>arget Group name (optional):</div>
+			<input type=text id="TargetGroup" name=TargetGroup size=30 AccessKey=T> -->
+		</td>
+	</tr>
+</table>
+<div id=Espace3>
+	<br/>
+	<!-- <br/> -->
+</div>
+																			<Label class=Larger style="background:White">Choix des Pilotes (Drivers)</label><Label class=Larger id="TLD1"></Label>
+<table>
+	<tr>
+		<input type=text disabled id="DriverPath" name=DriverPath size=70 >
+		<td id=DGNoDrivers>
+			<input type=radio name=DG id="DGnone" language=vbscript onclick=ValidateDriverGroup AccessKey=A>
+			<Label class="Larger"><u class=larger>A</u>ucun</Label>
+		</td>
+		<td id=DGexist>
+			<input type=radio name=DG disabled id="DGModel" language=vbscript onclick=ValidateDriverGroup AccessKey=M>
+			<Label class="Larger"><u class=larger>M</u>odèle</Label>
+			<Label class="Larger" id=ModelDriverCount></Label>
+		</td>
+		<td id=DGMexist>
+			<input type=radio name=DG disabled id="DGMake" language=vbscript onclick=ValidateDriverGroup AccessKey=C>
+			<Label class="Larger"><u class=larger>C</u>onstructeur</Label>
+		</td>
+		<!-- <td id=DGnoexist>
+			<input type=radio name=DG id="DGAll" language=vbscript onclick=ValidateDriverGroup AccessKey=B>
+			<Label class="Larger"><u class=larger>B</u>ase totale</Label>
+		</td> -->
+	</tr>
+</table>
+<table>
+	<tr>
+		<td>
+			<input type=radio name=DG id="DGList" language=vbscript onclick=ValidateDriverGroup AccessKey=L></input>
+			<Label class="Larger"><u class=larger>L</u>iste Drivers</Label>
+			<select id="hDriverSelect" onchange=ValidateDriverGroup>
+  			<option value="None">--- Model Drivers List ---</option>
+			</select>
+		</td>
+	</tr>
+</table>
+
+]]></Body>
+    <Initialization><![CDATA[InitializePartitions]]></Initialization>
+    <Validation><![CDATA[ValidatePartitions]]></Validation>
+    <Validation><![CDATA[ValidateGhostDetect_Final]]></Validation>
+    <Condition><![CDATA[oEnvironment.Item("OSVersion") = "WinPE" and Property("DeploymentType")<>"REPLACE" and Property("DeploymentType")<>"CUSTOM" and Property("DeploymentType") <> "StateRestore" And UCase(Property("SkipComputerName"))<>"YES"]]></Condition>
+    <Initialization><![CDATA[InitializeWindowsUpdate]]></Initialization>
+    <Validation><![CDATA[ValidateWindowsUpdate_Final]]></Validation>
+    <Initialization><![CDATA[InitializeComputerName]]></Initialization>
+    <Validation><![CDATA[ValidateComputerName]]></Validation>
+    <Initialization><![CDATA[InitDriverGroup]]></Initialization>
+    <Validation><![CDATA[ValidateDriverGroup_Final]]></Validation>
+  </Pane>
+</Wizard>

@@ -1,0 +1,191 @@
+<job id="ZTILoadDISMFromWIM">
+   <runtime>
+      <named name="OSDirName" helpstring="The folder name that contains the imported operating system files" required="false" type="string"/>
+   </runtime>
+   <script language="VBScript" src="ZTIUtility.vbs"/>
+   <script language="VBScript">
+
+' // ***************************************************************************
+' // 
+' // Copyright (c) West Monroe Partners.  All rights reserved.
+' // 
+' // Automated Build Environment
+' //
+' // File:      ZTILoadDISMFromBootWIM.wsf
+' // 
+' // Version:   1.0.0
+' // 
+' // Purpose:   Copies DISM binaries from a WIM file so that the Microsoft
+' //            Deployment Toolkit can work with new, not-yet supported
+' //            operating system releases
+' // 
+' // Usage:     cscript ZTILoadDISMFromWIM.wsf [/OSDirName:W10CTP64]
+' // 
+' // ***************************************************************************
+
+Option Explicit
+RunNewInstance
+
+'//----------------------------------------------------------------------------
+'//  Global Constants
+'//----------------------------------------------------------------------------
+
+'//----------------------------------------------------------------------------
+'//  End declarations
+'//----------------------------------------------------------------------------
+
+
+'//----------------------------------------------------------------------------
+'//  Main Class
+'//----------------------------------------------------------------------------
+
+Class ZTILoadDISMFromWIM
+
+	'//----------------------------------------------------------------------------
+	'//  Global constant and variable declarations
+	'//----------------------------------------------------------------------------
+
+	Dim iRetVal
+
+	'//----------------------------------------------------------------------------
+	'//  Constructor to initialize needed global objects
+	'//----------------------------------------------------------------------------
+
+	Private Sub Class_Initialize
+
+
+
+	End Sub
+	
+	
+	'//----------------------------------------------------------------------------
+	'//  Main routine
+	'//----------------------------------------------------------------------------
+
+	Function Main
+	
+		' Local Variables
+		Dim iRc
+		Dim sOSDirName
+		Dim sWIMPath
+		Dim sWIMMountPath
+		Dim sDISMStagingPath
+		Dim sCommandLine
+		Dim sWinPeRAMDiskSystem32Dir
+
+
+		iRetVal = SUCCESS
+
+		' Main script processing
+
+		oLogging.CreateEntry "---------------- Initialization ----------------", LogTypeInfo
+		
+		If WScript.Arguments.Named.Exists("OSDirName") Then
+			sOSDirName = WScript.Arguments.Named.Item("OSDirName")
+			oLogging.CreateEntry "OSDirName argument specified, so we are using it. OS Directory Name is: " & sOSDirName, LogTypeInfo
+		Else
+			sOSDirName = "NONE"
+			oLogging.CreateEntry "OSDirName argument NOT specified", LogTypeInfo
+		End If
+
+		' If the DeployRoot is configured, make sure we have a connection to it.
+		If oEnvironment.Item("DeployRoot") <> "" then
+			oUtility.ValidateConnection oEnvironment.Item("DeployRoot")
+		End if
+		
+		'Verify that we can see the WIM file
+		iRC = 1
+		If sOSDirName <> "NONE" Then
+			sWIMPath = oEnvironment.Item("DeployRoot") & "\Operating Systems\" & sOSDirName & "\sources\boot.wim"
+			If oFSO.FileExists(sWIMPath) Then
+				iRc = 0
+				oLogging.CreateEntry "Successfully located: " & sWIMPath, LogTypeInfo
+			Else
+				oLogging.CreateEntry "Could not locate: " & sWIMPath, LogTypeInfo
+			End If
+		End If
+		If iRc <> 0 Then
+			'Have not found the WIM yet...
+			'Try a string replace on the INSTALLFROMPATH OSD variable to locate the boot.wim
+			sWIMPath = oEnvironment.Item("INSTALLFROMPATH")
+			oLogging.CreateEntry "INSTALLFROMPATH=" & sWIMPath, LogTypeInfo
+			sWIMPath = Replace(sWIMPath, "install.wim", "boot.wim", 1, -1, 1)
+			If oFSO.FileExists(sWIMPath) Then
+				iRc = 0
+				oLogging.CreateEntry "Successfully located: " & sWIMPath, LogTypeInfo
+			Else
+				iRc = iRc + 2
+				oLogging.CreateEntry "Could not locate: " & sWIMPath, LogTypeInfo
+				'Try using the INSTALLFROMPATH OSD variable to locate the installation WIM
+				sWIMPath = oEnvironment.Item("INSTALLFROMPATH")
+				If oFSO.FileExists(sWIMPath) Then
+					iRc = 0
+					oLogging.CreateEntry "Successfully located: " & sWIMPath, LogTypeInfo
+				Else
+					iRc = iRc + 4
+					oLogging.CreateEntry "Could not locate: " & sWIMPath, LogTypeInfo
+				End If
+			End If
+		End If
+		TestAndFail iRc, 0, "Unable to locate boot.wim or installation WIM file, aborting"
+		
+		'Mount the WIM against the OS disk; can't mount it against the WinPE RAM disk
+		sWIMMountPath = oEnvironment.Item("OSDisk") & "\WIMMount"
+		oFSO.CreateFolder sWIMMountPath
+		sCommandLine = "DISM.EXE /Mount-Image /ImageFile:""" & sWIMPath & """ /Index:1 /MountDir:""" & sWIMMountPath & """ /ReadOnly"
+		oLogging.CreateEntry "About to run: " & sCommandLine, LogTypeInfo
+		iRc = oShell.Run(sCommandLine, 0, true)
+		TestAndFail iRc, 0, "Failed to mount WIM image using DISM, aborting"
+		
+		'Verify that we can see the DISM files on the mounted WIM
+		If oFSO.FileExists(sWIMMountPath & "\Windows\System32\dism.exe") Then
+			iRc = 0
+			oLogging.CreateEntry "Successfully located: " & sWIMMountPath & "\Windows\System32\dism.exe", LogTypeInfo
+		Else
+			iRc = 1
+			oLogging.CreateEntry "Could not locate: " & sWIMMountPath & "\Windows\System32\dism.exe", LogTypeInfo
+		End If
+		TestAndFail iRc, 0, "Unable to locate dism, aborting"
+
+		'We do not want to overwrite WinPE's DISM files while we have an image mounted
+		'So, let's stage them temporarily on the OS disk
+		sDISMStagingPath = oEnvironment.Item("OSDisk") & "\DISMStage"
+		oFSO.CreateFolder sDISMStagingPath
+		
+		'Stage DISM files on the OS disk
+		oFSO.CopyFile sWIMMountPath & "\Windows\System32\dism.exe", sDISMStagingPath & "\dism.exe", True
+		oFSO.CopyFolder sWIMMountPath & "\Windows\System32\DISM", sDISMStagingPath & "\DISM", True
+		oLogging.CreateEntry "Successfully staged DISM files in folder: " & sDISMStagingPath, LogTypeInfo
+		
+		'With DISM files staged, unmount the WIM file
+		sCommandLine = "DISM.EXE /Unmount-Image /MountDir:""" & sWIMMountPath & """ /Discard"
+		oLogging.CreateEntry "About to run: " & sCommandLine, LogTypeInfo
+		iRc = oShell.Run(sCommandLine, 0, true)
+		TestAndFail iRc, 0, "Failed to mount WIM image using DISM, aborting"
+		oFSO.DeleteFolder sWIMMountPath, True
+		
+		'Verify that we can see the DISM files on the mounted WIM
+		sWinPeRAMDiskSystem32Dir = oEnv("WINDIR") & "\System32"
+		If oFSO.FileExists(sWinPeRAMDiskSystem32Dir & "\dism.exe") Then
+			iRc = 0
+			oLogging.CreateEntry "Successfully located: " & sWinPeRAMDiskSystem32Dir & "\dism.exe", LogTypeInfo
+		Else
+			iRc = 1
+			oLogging.CreateEntry "Could not locate: " & sWinPeRAMDiskSystem32Dir & "\dism.exe", LogTypeInfo
+		End If
+		TestAndFail iRc, 0, "Unable to locate dism on WinPE RAM disk, aborting"
+
+		'Now, copy the DISM files staged on the OS disk to the WinPE RAM Disk
+		oFSO.CopyFile sDISMStagingPath & "\dism.exe", sWinPeRAMDiskSystem32Dir & "\dism.exe", True
+		oFSO.CopyFolder sDISMStagingPath & "\DISM", sWinPeRAMDiskSystem32Dir & "\DISM", True
+		oLogging.CreateEntry "Successfully copied DISM files to: " & sWinPeRAMDiskSystem32Dir, LogTypeInfo
+
+		'Finally, remove the staged DISM files from the OS disk
+		oFSO.DeleteFolder sDISMStagingPath, True
+		oLogging.CreateEntry "Deleted the staged DISM files from: " & sDISMStagingPath, LogTypeInfo
+	End Function
+
+End Class
+
+   </script>
+</job>

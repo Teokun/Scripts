@@ -1,0 +1,14 @@
+<Wizard>
+  <Global>
+    <CustomScript>DeployWiz_TestView.vbs</CustomScript>
+  </Global>
+  <Pane id="TestView">
+    <Body><![CDATA[
+                <H1>Test View<H1>
+<p>
+<span id=optionalWindow1 style="display=none;" class=LightColoredBox>Details Here!</span>
+</p>]]></Body>
+    <Initialization><![CDATA[InitializeTestView]]></Initialization>
+    <Validation><![CDATA[ValidateTestView]]></Validation>
+  </Pane>
+</Wizard>
