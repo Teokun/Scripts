@@ -15,6 +15,7 @@
 
 Option Explicit
 
+Dim strPattern
 
 Function InitializeComputerName
 
