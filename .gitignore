@@ -1,47 +1,45 @@
-# Windows image file caches
+_WG_Login.lnk
+_MDT Launcher.lnk
+_Synchro_File.lnk
+Utilman_to_CMD.bat
 Thumbs.db
-ehthumbs.db
-
-# Folder config file
-Desktop.ini
-
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
-
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# Windows shortcuts
-*.lnk
-
-# =========================
-# Operating System Files
-# =========================
-
-# OSX
-# =========================
-
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Thumbnails
-._*
-
-# Files that might appear in the root of a volume
-.DocumentRevisions-V100
-.fseventsd
-.Spotlight-V100
-.TemporaryItems
-.Trashes
-.VolumeIcon.icns
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
+Quick check.vbs.lnk
+menu.bat
+Add Old Apps in VHD to Windows 7.hta
+bin/libeay32.dll
+bin/libiconv2.dll
+bin/libintl3.dll
+bin/libssl32.dll
+bin/tempfile
+bin/wget.exe
+CMD_to_Utilman.bat
+Compte admin.fmi.lnk
+dep/darkWim.cmd
+dep/dep-cmb.bat
+Login_FMI-DATA.cmd
+dep/ExplorerFrame_x86/ShellListview.reg
+dep/ExplorerFrame_x86/ExplorerFrame.dll
+dep/info.cmd
+dep/ExplorerFrame_x64/ShellListview64.reg
+MajWsus.lnk
+Inventaire_XP.lnk
+dep/test/MDT_Scripting/Function_Validate New_User_Name.txt
+dep/test/MDT_Scripting/Add_Input_Text.txt
+dep/test/MDT_Scripting/Creating Simple and_or Smart Custom Wizard Panes (Prompts) for MDT using the Wizard Editor. _ Support is _Here_.pdf
+dep/test/MDT_Scripting/Create a custom Deployment Wizard pane for Updates (MDT) _ MicaH's IT blog.pdf
+dep/test/MDT_Scripting/DeployWiz_WinUpdates.VBS
+dep/test/MDT_Scripting/updatepane1.png
+DriverStore.lnk
+dep/test/MDT_Scripting/WinUpdate.html
+dep/test/MDT_Scripting/updatepane-wizardeditor.png
+dep/test/MDT_Scripting/Add_Button_Radio.txt
+dep/resetmenu.bat
+dep/mdt.bat
+dep/GHOSTERR.TXT
+dep/Ghost64.exe
+dep/Ghost32.exe
+dep/ghost32.dmp
+dep/ghost-std.cmd
+dep/ghost-master.cmd
+dep/ghost-backup.cmd
+dep/ExplorerFrame_x64/ExplorerFrame.dll

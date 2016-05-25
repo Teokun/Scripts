@@ -23,26 +23,24 @@ Function InitializeRoleConfig
  Dim iRetVal, i, j
  Dim strHolder
  
+  
+  SelectRoleConfig_ProcessingLock( False )
+ 
  If oEnvironment.listitem("SelectableRole") is nothing then
   Exit function
  ElseIf oEnvironment.listitem("SelectableRole").count < 1 Then
   Exit function
  End if
 	
-	
-	
-	TypeMaterielPC.disabled = False
-	TypeMaterielSRV.disabled = False
-	TypeMaterielEBKP.disabled = False
-	
+		
  ProcessRoleProperties.style.display = "none"
  ProcessReloadRole.style.display = "none"
  ProcessSite.style.display = "none"
  
 	Set oSiteSelect=document.getElementById("hClientSiteSelect")
-	For Each oSiteOption in oSiteSelect.Options 
-		oSiteOption.RemoveNode
-	Next
+	'For Each oSiteOption in oSiteSelect.Options 
+	'	oSiteOption.RemoveNode
+	'Next
 	
 	Set oRoleSelect=document.getElementById("hRoleSelect")
 	For Each oRoleOption in oRoleSelect.Options 
@@ -68,8 +66,7 @@ Function InitializeRoleConfig
 		Next
 	Next
 	
- SetRoleOption  "<Applications>", ""
- SetSiteOption "<Aucun>", ""
+ SetRoleOption  "-- Applications ONLY --", ""
  
  For i = 0 To UBound(arrListRole)
   If arrListRole(i) <> "" Then SetRoleOption arrListRole(i),arrListRole(i)
@@ -98,10 +95,11 @@ Function InitializeRoleConfig
 	End If
 
 	' Affichage Organisation Pour Control Visuel
-	If Not IsEmpty(Property("TagSite")) Then
-		document.getElementById("cCurrentProfile").innerHTML = document.getElementById("cCurrentProfile").innerHTML & "<br />" & _
-		" TAG : " & "TAG_" & oEnvironment.Item("OrgName") & oEnvironment.Item("TagSite")
-	ElseIf Not IsEmpty(Property("OrgName")) Then
+	'If Not IsEmpty(Property("TagSite")) Then
+	'	document.getElementById("cCurrentProfile").innerHTML = document.getElementById("cCurrentProfile").innerHTML & "<br />" & _
+	'	" TAG : " & "TAG_" & oEnvironment.Item("OrgName") & oEnvironment.Item("TagSite")
+	'Else
+	If Not IsEmpty(Property("OrgName")) Then
 			document.getElementById("cCurrentProfile").innerHTML = document.getElementById("cCurrentProfile").innerHTML & "<br />" & _
 			" TAG : " & "TAG_" & oEnvironment.Item("OrgName")
 	Else
@@ -119,10 +117,9 @@ Sub ClearSite
 		oSiteOption.RemoveNode
 	Next	
 	
- 	If oEnvironment.listitem("ClientSite") is nothing then
+ 	If ( oEnvironment.listitem("ClientSite") is Nothing ) or ( oEnvironment.listitem("ClientSite").count < 1 ) then
+ 		 SetSiteOption "-- Aucun --", ""
   	Exit Sub
- 	ElseIf oEnvironment.listitem("ClientSite").count < 1 Then
- 	 Exit Sub
  	End if
 	
 
@@ -151,66 +148,50 @@ Function ProcessRoleConfig
 		'If Property("Role001") = hRoleSelect.Value Then Exit Function
 		oEnvironment.Item("Role001") = hRoleSelect.Value
 		
-		ClearSite
-		'SaveAllDataElements
-		'SaveProperties
-		
 		ButtonNext.disabled = true
 		ProcessSite.style.display = "inline"
 	
 	sCmd = "wscript.exe """ & oUtility.ScriptDir & "\ZTIGather.wsf""" & " /inifile:""" & oUtility.ScriptDir &  "\..\Control\ClientSiteSettings.ini"""
 	iRetVal = oShell.Run(sCmd, , true)
-	'alert(Property("ClientSite").Count)
 	
- If oEnvironment.listitem("ClientSite") is nothing then
-  ProcessSite.style.display = "none"
-	ButtonNext.disabled = False
-  Exit function
- ElseIf oEnvironment.listitem("ClientSite").count < 1 Then
- 	ProcessSite.style.display = "none"
-	ButtonNext.disabled = False
-  Exit function
- End if
-	
-	
-	For each oSite in Property("ClientSite")
+ If not( ( oEnvironment.listitem("ClientSite") is nothing ) or ( oEnvironment.listitem("ClientSite").count < 1 ) ) Then
+  	
+  	For each oSite in Property("ClientSite")
 	  	SetSiteOption oSite,oSite
-	Next
+		Next
+		
+	End If
 	
-	
-	
-	ProcessSite.style.display = "none"
-	ButtonNext.disabled = False
-	
+		ProcessSite.style.display = "none"
+		ButtonNext.disabled = False
+
 End Function
 
 '''
+Function SelectRoleConfig_ProcessingLock( sValue )
+		hClientSiteSelect.disabled = sValue
+		hRoleSelect.disabled = sValue
+		buttonReloadRole.disabled = sValue
+		buttonReloadSite.disabled = sValue
+
+	  TypeMaterielPC.disabled = sValue
+	  TypeMaterielSRV.disabled = sValue
+	  TypeMaterielEBKP.disabled = sValue
+End Function
 
 Function ValidateRoleSelectList
  Dim sCmd, oItem
 	
-	TypeMaterielPC.disabled = True
-	TypeMaterielSRV.disabled = True
-	TypeMaterielEBKP.disabled = True
+	SelectRoleConfig_ProcessingLock( True )
 	
 	oEnvironment.Item("TagSite") = ""
 	oEnvironment.Item("OrgName") = ""
   oEnvironment.Item("AdmAcc") = ""
   oEnvironment.Item("AdmPwd") = "" 
   oEnvironment.Item("Role001") = hRoleSelect.Value
-  CLIENTINVSITE.Value =  hClientSiteSelect.Value
-  ClearSite
-  oEnvironment.Item("ClientSite001") = CLIENTINVSITE.Value
   
- 	' Flush the value to variables.dat, before we continue.
- 	'Pour le cas du choix serveur, demande de saisie de la clé Windows
- 	
- 	' Si role SERVEUR
- 	'If hRoleSelect.Value = "--- SERVEUR ---" or hRoleSelect.Value = "--- E-BACKUP ---" Then
-
- 	
-	'SaveAllDataElements
-	'SaveProperties
+  CLIENTINVSITE.Value =  hClientSiteSelect.Value
+  oEnvironment.Item("ClientSite001") = hClientSiteSelect.Value
 	
   If IsEmpty(Property("Role001")) Then
  		ValidateRoleSelectList=True
@@ -255,7 +236,6 @@ Function ValidateRoleSelectList
 		Else
 			AdminPWD.Value = Property("AdmPwd") & ".FR" 	'Modification effective au 21/04/2015
 		End If
-	'	If TypeMaterielPC.checked Then AdminPWD.Value = AdminPWD.Value & ".FR"
 		
 	End If
 	
@@ -266,11 +246,10 @@ Function ValidateRoleSelectList
 	'	AdminPWD.Value = 	UCASE(AdminPWD.Value)
 	'	AdminPWD.Value =  Replace(UCASE(Property("AdmPwd")), "@FMI","@fmi")	
 	'End If
-
+	
+	SelectRoleConfig_ProcessingLock( False )
+	
 	ValidateRoleSelectList = True
-	TypeMaterielPC.disabled = False
-	TypeMaterielSRV.disabled = False
-	TypeMaterielEBKP.disabled = False
 
 End Function
 
@@ -340,5 +319,6 @@ Sub QuickCleanup2
 		oEnvironment.Item("TagSite") = ""
 		oEnvironment.Item("AdminPassword") = ""
 		hRoleSelect.Value=""
+		set g_AllOperatingSystems = Nothing
 		window.location.reload()
 End sub

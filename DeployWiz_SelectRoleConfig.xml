@@ -13,7 +13,9 @@
 <div>
 	Sélectionner un <span style="color=blue">"Client"</span> puis cliquer sur <span style="color=blue">Search</span> pour rechercher le "Site Client".
 	<br/><br/>
-	Pour un PC de Prêt, sélectionner <span style="color=blue">-- FMI -- PRET </span>
+	Pour installer un PC de Prêt, sélectionner <span style="color=blue">-- FMI -- PRET </span>
+	<br/><br/>
+	Pour un PC en stock SAV, sélectionner <span style="color=blue">-- FMI -- SAV </span>
 	<br/><br/>
 <!--	<span style="color=blue"> 
 		Pour un SERVEUR, cocher cette case 
@@ -22,7 +24,7 @@
 	<br/><br/>
 	Pour un E-BACKUP, sélectionner <span style="color=blue">--- E-BACKUP ---</span>
 	<br/><br/>	-->
-	Pour l'installation des applications uniquement, laisser "Aucun" et cliquez sur "Suivant"
+	Pour l'installation des applications uniquement, choisir -- Applications ONLY --
 	<br/><br/>
 </div>
 
@@ -39,14 +41,14 @@
 <table>
 	<tr>
 		<td>
-			<button type="button" onclick=ReloadRole>Recharger </button>
+			<button type="button" name=buttonReloadRole onclick=ReloadRole>Recharger </button>
 			<Label>C<u class=larger>l</u>ient : </Label>
 		</td>
 		<td>	
 				&nbsp;&nbsp;
 		</td>
 		<td>
-			<button type="button" onclick=ProcessRoleConfig> Search </button>
+			<button type="button" name=buttonReloadSite onclick=ProcessRoleConfig> Search </button>
 			<Label><u class=larger>S</u>ite Client </Label>
 						
 		</td>
@@ -55,7 +57,7 @@
 	<tr>
 		<td>
 			<select id="hRoleSelect" name=hRoleSelect onpropertychange=ClearSite AccessKey=l>
-  			<option value="None">--- Liste Client ---</option>
+  			<option value="None">-- Liste Client --</option>
 			</select>
 		</td>
 		<td>	
@@ -63,7 +65,7 @@
 		</td>
 		<td>
 			<select id="hClientSiteSelect" name=hClientSiteSelect AccessKey=s>
-  			<option value="None">--- Site Client ---</option>
+  			<option value="None">-- Aucun --</option>
 			</select>
 		</td>
 		</tr>
@@ -74,7 +76,14 @@
 		<td>	
 				&nbsp;&nbsp;
 		</td>
+		</tr>
+		<tr>
+		</tr>
+
+		<tr>
 		<td>
+				En cas de mauvais choix en cache</br>
+				utilisez RAZ profil pour vider le cache</br>
 			<button type="button" onclick=QuickCleanup2>RAZ Profil</button>
 		</td>
 	</tr>
