@@ -390,10 +390,10 @@ Class ZTIDiskpart
 
 			Else
 
-				oLogging.CreateEntry "Create a MBR Boot Partition set. "  & sBootDrive, LogTypeInfo
+				oLogging.CreateEntry "Create a MBR Boot Partition set. compatible UEFI "  & sBootDrive, LogTypeInfo
 
 				oUtility.RunCommandWrite oExec, "CREATE PARTITION PRIMARY Size=" & cstr(iBdeDriveSize)
-				oUtility.RunCommandWrite oExec, "FORMAT QUICK FS=NTFS LABEL=""System"""
+				oUtility.RunCommandWrite oExec, "FORMAT QUICK FS=FAT32 LABEL=""System"""
 				oUtility.RunCommandWrite oExec, "ASSIGN LETTER=" & left( sBootDrive, 1)
 				' oUtility.RunCommandWrite oExec, "ATTRIBUTES VOLUME SET NODEFAULTDRIVELETTER NOERR"
 				oUtility.RunCommandWrite oExec, "ACTIVE"

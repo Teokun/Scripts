@@ -112,7 +112,8 @@ Function InitializePartitions
 	strSN = oEnvironment.Item("SerialNumber")
  	
  	'SrvWimChemin.Value = "\\fmi-data\DATA\_DEP\ISOs - IMAGES\WIM"
- 	SrvWimChemin.Value = "\\sove\WIM"
+ 	'SrvWimChemin.Value = "\\sove\WIM"
+ 	SrvWimChemin.Value = oEnvironment.Item("DeployRoot") & "\Captures"
  	'SrvWimChemin.Value = "\\dx\WIM"
  	
  	Dim bServer

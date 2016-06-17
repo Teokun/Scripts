@@ -45,18 +45,20 @@ Function InitDriverGroup
 	
 	If Not oOS.SelectSingleNode("Build") Is Nothing Then 
 		sOSBuild = oOS.SelectSingleNode("Build").Text
-		document.getElementById("TLD1").innerHTML = Left(sOSBuild, 3)
 	End If
 	
 	Select Case Left(sOSBuild, 3)
 		Case "6.1":
 			sOSPath = "\WINDOWS 7"
+			document.getElementById("TLD1").innerHTML = "(" & Left(sOSBuild, 3) & ", dossier " & sOSPath & ")"
 		Case "6.2","6.3", "10.":
 			sOSPath = "\WINDOWS 8"
+			document.getElementById("TLD1").innerHTML = "(" & Left(sOSBuild, 3) & ", dossier " & sOSPath & ")"
 		Case Else :
 			sOSPath = ""
+			document.getElementById("TLD1").innerHTML = "(" & Left(sOSBuild, 3)
 	End Select
-	
+
 	'
 	
 	' Variable pour Constructeur\Modèle
@@ -184,37 +186,56 @@ Function InitDriverGroup
 	Next 
 	
 	' Populate Select Option List
-	sParent = " "
-	s = ""
-	Dim pereOK, h, sTiret
-	pereOK = True
+
+	Dim h, sTiret, sText, strPrev, sPRE
 	
+	
+	'' Fonction de masquage des redondances dans la liste des pilotes affichées
 	For i = 1 To UBound(arrListDG)
 		If arrListDG(i) = "Generic <>" Then sGeneric = arrListDG(i)
 		
 		If arrListDG(i) <> "" Then 
-		s = ""
-			If i < UBound(arrListDG) Then
-				' Test si le noeud actuel est un pere
-				If Instr(1, arrListDG(i+1), Mid(arrListDG(i),1,Instr(1,arrListDG(i)," <",1)-1) , 1) Then
-
-						sParent = Left(arrListDG(i+1),Instr(1,arrListDG(i+1),"\",1)-1)
-						s = "+ " & arrListDG(i)
-						pereOK = True
-
-				' Test si le noeud est un fils
-				ElseIf Instr(1, arrListDG(i), sParent , 1) = 1 Then
-					sTiret = ""
-					For h = 1 to Len(sParent)
-						sTiret = sTiret + " "
-					Next
-					s = " | " & Replace(arrListDG(i),sParent,sTiret)
+		sText = ""
+			If i <= UBound(arrListDG) Then
+				
+	
+				If i = 1 Then
+					' 1er élément de la liste à afficher, pas de masquage
+					
+					sText = "+ " & arrListDG(i)
+					sPRE = Left(arrListDG(i),Instr(1,arrListDG(i)," <",1)-1) 'mémorication du texte
+				
 				Else
-					s = arrListDG(i)
-					pereOK = False
+					' Pour tout les éléments suivant
+					
+					strPrev = Left(arrListDG(i-1),Instr(1,arrListDG(i-1)," <",1)-1)
+					
+					
+					If InStr(1, arrListDG(i), strPrev , 1) = 1 Then ' Si l'élément précédent est contenu, procédure de masquage
+						sTiret = ""
+						For h = 1 to Len(strPrev)
+							sTiret = sTiret + " "
+						Next
+						sText = " | " & Replace(arrListDG(i),strPrev,sTiret)
+					
+					ElseIf InStr(1, arrListDG(i), sPRE , 1) = 1 Then 'Sinon, si l'élément parent est contenu, procédure de masquage
+						
+						sTiret = ""
+						For h = 1 to Len(sPRE)
+							sTiret = sTiret + " "
+						Next
+						sText = " | " & Replace(arrListDG(i),sPRE,sTiret)
+						
+					Else	' Sinon nous sommes sur un nouvel élément parent, pas de masquage, et nouvelle mémorisation du texte 
+						
+						sText = "+ " & arrListDG(i)
+						sPRE = Left(arrListDG(i),Instr(1,arrListDG(i)," <",1)-1)
+						
+					End If
 				End If
-			End If
-		SetOption s , arrListDG(i)
+		    End If
+			
+		SetOption sText , arrListDG(i)
 		End If
 	Next
 	

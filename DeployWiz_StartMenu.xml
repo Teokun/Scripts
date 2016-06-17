@@ -25,7 +25,7 @@
 			<button style="background: inherit; background-image: url(btnout.png); width: 600px; height: 70px;border: 0px;font: 20px; font-weight: bold;" id="buttonItem2" 
 			title="Lancement de l'assitant pour la capture et la restauration d'image WIM"
 			onmouseover="RunSelCmd" onmouseout="RunSelCmd"  onclick="RunSelCmd" ondblclick="RunSelCmd"  onactivate="RunSelCmd" ondeactivate="RunSelCmd">
-			Assistant WIM (MDTBOOTx86 only)
+			Assistant WIM (BackupWIM)
 			</button>
 			
 			<button style="background: inherit; background-image: url(btnout.png); width: 600px; height: 70px; border: 0px; font: 20px; font-weight: bold;" id="buttonItem3" 
