@@ -2,7 +2,7 @@
   <Global>
     <CustomScript>DeployWiz_LOTC.vbs</CustomScript>
   </Global>
-  <Pane id="LOTC" title="LOTC">
+  <Pane id="LOTC">
     <Body><![CDATA[<h1>Module Interactif de Capture et Restauration&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type=checkbox name=LanDEPopt language=vbscript onpropertychange=ValidateLanDEP disabled/> Dep Local </h1>
 
 <input type=hidden id="WimSrvPath" name=WimSrvPath size=40></td>
@@ -111,8 +111,8 @@
 		<br/>
 		<label>Utilitaire de disque PartitionWizard => </label>
  		<button id=FormatBtn type="button" onclick=PartitionWizardLOTC > Go! </button><br/>
- 		<label>Formatage Automatique en 1 partition  </label>
- 		<button id=FormatBtnAuto type="button" onclick=FormatDiskLOTC > FormatAuto </button>
+ 		<!-- <label>Formatage Automatique en 1 partition  </label>
+ 		<button id=FormatBtnAuto type="button" onclick=FormatDiskLOTC > FormatAuto </button> -->
 	</p>	
 	<table>
 			<tr>

@@ -167,8 +167,9 @@ Function Main
 	'//  Purpose:	Apply the specified Windows  image to the machine. 
 	'//
 	'//---------------------------------------------------------------------------
-
 Function ApplyImageLOTC( sVersion )
+	
+	
 	
 		Dim iRC
 		Dim sImagePath
@@ -188,10 +189,17 @@ Function ApplyImageLOTC( sVersion )
 
 
 		sImagePath = GetSourcePathWim
+		
 		sImageIndex = oEnvironment.Item("sWimImageIndex")
 
+		
+		
+		
+		
+		
 		oLogging.CreateEvent 41023, LogTypeInfo, "LTI applying image " & sImagePath & " using ImageX / " & sVersion , Array()
 
+		
 		'If not oFSO.FileExists(sImagePath) then
 		'	oUtility.ValidateConnection sImagePath
 		'End if
@@ -232,14 +240,18 @@ Function ApplyImageLOTC( sVersion )
 
 		' Apply the image
 
-		sCmd = " /apply " & sImagePath & " " & sImageIndex & " " & sDestinationDrive
-		If sRWMPath <> "" then
-			sCmd = sCmd & " /ref """ & sRWMPath & """" 
-		End if
+		'sCmd = " /Apply-Image " & sImagePath & " " & sImageIndex & " " & sDestinationDrive
 
+
+		
+		
+		
+		sCmd = " /Apply-Image /ImageFile:""" & sImagePath & """"
+		sCmd = sCmd & " /Index:" & sImageIndex & " /ApplyDir:" & sDestinationDrive
+		
 		oLogging.ReportProgress "Applying image", 50
-		iRC = oUtility.FindExeAndRunWithLogging( "imagex.exe", sCmd )
-		TestAndFail iRC, 5624, "Run ImageX: " & sCmd
+		iRC = oUtility.FindExeAndRunWithLogging( "DISM.exe", sCmd )
+		TestAndFail iRC, 5624, "Run DISM: " & sCmd
 
 		oEnvironment.Item("LTIDirtyOS") = "TRUE"
 
@@ -291,10 +303,15 @@ Function ApplyImageLOTC( sVersion )
 				' When using Windows ADK, specify that we want to update the UEFI BCD (in firmware).
 				' When using Windows AIK, don't specify a store as it *should* figure it out.
 
-				If Left(oEnvironment.Item("OSCurrentVersion"), 3) >= "6.2" then
-					TestAndFail RunBCDBootEx( sDestinationDrive & "\windows", " /s " & left(oBootDrive.Drive,2) & " /f UEFI"), 5616, "Verify BCDBootEx"
-				Else
-					TestAndFail RunBCDBootEx( sDestinationDrive & "\windows", " "), 5616,"Verify BCDBootEx"
+				If oEnvironment.Item("OSCurrentVersion") <> "" then
+				
+					oUtility.GetMajorMinorVersion( oEnvironment.Item("OSCurrentVersion"))
+					If ((oUtility.VersionMajor = 6 and oUtility.VersionMinor >= 2) or oUtility.VersionMajor >= 10 )then
+						TestAndFail RunBCDBootEx( sDestinationDrive & "\windows", " /s " & left(oBootDrive.Drive,2) & " /f UEFI"), 5616, "Verify BCDBootEx"
+
+					Else
+						TestAndFail RunBCDBootEx( sDestinationDrive & "\windows", " "), 5616,"Verify BCDBootEx"
+					End if
 				End if
 
 

@@ -24,6 +24,8 @@
     <Condition><![CDATA[UCASE(Property("SkipTaskSequence"))<>"YES" ]]></Condition>
     <Body><![CDATA[
 				<H1>Select a task sequence to execute on this computer.</H1>
+				S/N : <input type=text id="OSDComputerName" name=SerialNumber size=50 />
+				
 				<label class=ErrMsg id=Bad_OSGUID>Bad Task Sequence Item (Missing OS)</label>
 
 				<div class=TreeList id=TSListBox style="height: expression( GetDynamicListBoxSize(this) );">

@@ -326,9 +326,10 @@ Function FormatDiskLOTC
 	oEnvironment.Item("OSDDiskIndex") = CInt(hDiskSelect.Value)
 	' Set value for formatting depending on imageBuild
 	oEnvironment.Item("ImageBuild") = SelectWimInfoLOTC ( sImagePath , "Version" )
-	
+	oEnvironment.Item("DEPLOYMENTTYPE") = "NEWCOMPUTER"
 	oEnvironment.Item("OSDPartitions0SIZEUNITS")="%"
-	oEnvironment.Item("OSDPartitions0SIZE")=100
+	oEnvironment.Item("OSDPartitions0SIZE")="100"
+	oEnvironment.Item("OSDPartitions")= 1
 	oEnvironment.Item("OSDPartitions0VOLUMENAME")="System"
 	
 	If Not MsgBoxConfirm("Vous allez formater le disque " & Property("OSDDiskIndex") & ", toutes les donnees seront perdus !" ) Then 
@@ -336,8 +337,10 @@ Function FormatDiskLOTC
 	End If
 	
 		'Démarrage du formatage !!
-	sCmd = "cscript.exe """ & oUtility.ScriptDir & "\ZTIDiskpart.wsf"""
+	sCmd = "cscript.exe """ & oUtility.ScriptDir & "\ZTIDiskpart.wsf /debug:true"""
 	iRc = RunCmdShell ( sCmd )
+	
+	'Alert(iRc)
 	
 	' Rafraichissement du module
 	MajTableauParts
