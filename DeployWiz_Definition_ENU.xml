@@ -28,25 +28,15 @@
   </Pane>
   <Pane id="LOTC" reference="DeployWiz_LOTC.xml">
   </Pane>
-  <Pane id="WinUpdate" reference="DeployWiz_WinUpdates.xml">
-  </Pane>
   <Pane id="SelectRoleConfig" reference="DeployWiz_SelectRoleConfig.xml">
   </Pane>
   <Pane id="FusionInventory" reference="DeployWiz_FusionInventory.xml">
-  </Pane>
-  <Pane id="SelectRoleAdminAccount" reference="DeployWiz_SelectRoleAdminAccount.xml">
-  </Pane>
-  <Pane id="RoleServer" reference="DeployWiz_RoleServer.xml">
-  </Pane>
-  <Pane id="DriverGroup" reference="DeployWiz_DriverGroup.xml">
   </Pane>
   <Pane id="SelectTaskSequence" reference="DeployWiz_SelectTS.xml">
   </Pane>
   <Pane id="ComputerName" reference="DeployWiz_ComputerName.xml">
   </Pane>
   <Pane id="Configurations" reference="DeployWiz_Configurations.xml">
-  </Pane>
-  <Pane id="GhostDetect" reference="DeployWiz_GhostDetect.xml">
   </Pane>
   <Pane id="UserData" reference="DeployWiz_UserData.xml">
   </Pane>
@@ -65,8 +55,6 @@
   <Pane id="SelectRoles" reference="DeployWiz_Roles.xml">
   </Pane>
   <Pane id="ApplicationSelection" reference="DeployWiz_Applications.xml">
-  </Pane>
-  <Pane id="AdjustVirtualMemory" reference="DeployWiz_AdjustVirtualMemory.xml">
   </Pane>
   <Pane id="AdministratorPassword" reference="DeployWiz_AdminPassword.xml">
   </Pane>
